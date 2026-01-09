@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <title>Rucoy Underground</title>
@@ -7,8 +7,46 @@
 <body>
 
   <h1>Rucoy Underground</h1>
-  <p>Bem-vindo à comunidade Rucoy Underground.</p>
-  <p>Calculadora de XP em desenvolvimento.</p>
+  <p>Calculadora de XP do Rucoy Online</p>
+
+  <hr>
+
+  <label>Level atual:</label><br>
+  <input type="number" id="levelAtual"><br><br>
+
+  <label>Level desejado:</label><br>
+  <input type="number" id="levelDesejado"><br><br>
+
+  <label>XP por mob:</label><br>
+  <input type="number" id="xpMob"><br><br>
+
+  <button onclick="calcular()">Calcular</button>
+
+  <p id="resultado"></p>
+
+  <script>
+    function xpTotal(level) {
+      return level * level * 100;
+    }
+
+    function calcular() {
+      let atual = Number(document.getElementById("levelAtual").value);
+      let desejado = Number(document.getElementById("levelDesejado").value);
+      let xpMob = Number(document.getElementById("xpMob").value);
+
+      if (desejado <= atual || xpMob <= 0) {
+        document.getElementById("resultado").innerText = "Valores inválidos.";
+        return;
+      }
+
+      let xpNecessaria = xpTotal(desejado) - xpTotal(atual);
+      let mobs = Math.ceil(xpNecessaria / xpMob);
+
+      document.getElementById("resultado").innerText =
+        "XP necessária: " + xpNecessaria +
+        " | Mobs para matar: " + mobs;
+    }
+  </script>
 
 </body>
-</html>
+  </html>
