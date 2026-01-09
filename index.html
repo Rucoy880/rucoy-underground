@@ -12,13 +12,33 @@
   <hr>
 
   <label>Level atual:</label><br>
-  <input type="number" id="levelAtual"><br><br>
+  <input type="number" id="levelAtual" min="1"><br><br>
 
   <label>Level desejado:</label><br>
-  <input type="number" id="levelDesejado"><br><br>
+  <input type="number" id="levelDesejado" min="2"><br><br>
 
-  <label>XP por mob:</label><br>
-  <input type="number" id="xpMob"><br><br>
+  <label>Mob:</label><br>
+  <select id="mob">
+    <option value="8">Rat Lv 1</option>
+    <option value="12">Rat Lv 3</option>
+    <option value="18">Crow Lv 6</option>
+    <option value="27">Wolf Lv 9</option>
+    <option value="45">Goblin Lv 15</option>
+    <option value="75">Mummy Lv 25</option>
+    <option value="113">Pharaoh Lv 35</option>
+    <option value="188">Assassin Lv 45</option>
+    <option value="240">Assassin Lv 50</option>
+    <option value="300">Zombie Lv 65</option>
+    <option value="375">Skeleton Lv 75</option>
+    <option value="450">Skeleton Warrior Lv 90</option>
+    <option value="563">Vampire Lv 100</option>
+    <option value="735">Drow Assassin Lv 120</option>
+    <option value="870">Drow Fighter Lv 135</option>
+    <option value="640">Lizard Warrior Lv 150</option>
+    <option value="700">Lizard Archer Lv 160</option>
+    <option value="740">Lizard Shaman Lv 170</option>
+    <option value="2500">Minotaur Lv 225</option>
+  </select><br><br>
 
   <button onclick="calcular()">Calcular</button>
 
@@ -30,23 +50,24 @@
     }
 
     function calcular() {
-      let atual = Number(document.getElementById("levelAtual").value);
-      let desejado = Number(document.getElementById("levelDesejado").value);
-      let xpMob = Number(document.getElementById("xpMob").value);
+      const atual = Number(document.getElementById("levelAtual").value);
+      const desejado = Number(document.getElementById("levelDesejado").value);
+      const xpMob = Number(document.getElementById("mob").value);
 
-      if (desejado <= atual || xpMob <= 0) {
-        document.getElementById("resultado").innerText = "Valores inválidos.";
+      if (!atual || !desejado || desejado <= atual) {
+        document.getElementById("resultado").innerText =
+          "Levels inválidos.";
         return;
       }
 
-      let xpNecessaria = xpTotal(desejado) - xpTotal(atual);
-      let mobs = Math.ceil(xpNecessaria / xpMob);
+      const xpNecessaria = xpTotal(desejado) - xpTotal(atual);
+      const mobs = Math.ceil(xpNecessaria / xpMob);
 
       document.getElementById("resultado").innerText =
-        "XP necessária: " + xpNecessaria +
-        " | Mobs para matar: " + mobs;
+        `XP necessária: ${xpNecessaria}
+Mobs necessários: ${mobs}`;
     }
   </script>
 
 </body>
-  </html>
+</html>
