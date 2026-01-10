@@ -1,82 +1,136 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Rucoy Underground</title>
+<meta charset="UTF-8">
+<title>Rucoy Underground Calculator</title>
 
-  <style>
-    body {
-      background-color: #0f0f0f;
-      color: #e0e0e0;
-      font-family: Arial, Helvetica, sans-serif;
-      padding: 20px;
-    }
+<style>
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#0f0f0f;
+  color:#e0e0e0;
+}
 
-    .container {
-      max-width: 420px;
-      margin: 40px auto;
-      background-color: #111;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,255,136,0.15);
-    }
+/* MENU */
+.menu-btn{
+  position:fixed;
+  top:15px;
+  left:15px;
+  background:#00ff88;
+  color:#000;
+  border:none;
+  padding:10px 14px;
+  font-weight:bold;
+  cursor:pointer;
+  border-radius:6px;
+}
 
-    h1 {
-      color: #00ff88;
-    }
+.menu{
+  position:fixed;
+  top:0;
+  left:-220px;
+  width:200px;
+  height:100%;
+  background:#111;
+  padding:20px;
+  transition:0.3s;
+}
 
-    hr {
-      border: 1px solid #222;
-    }
+.menu a{
+  display:block;
+  color:#00ff88;
+  text-decoration:none;
+  margin:15px 0;
+  font-weight:bold;
+  cursor:pointer;
+}
 
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 10px;
-    }
+.menu.open{
+  left:0;
+}
 
-    input, select {
-      background-color: #1c1c1c;
-      color: #e0e0e0;
-      border: 1px solid #333;
-      padding: 8px;
-      width: 100%;
-      margin-top: 5px;
-    }
+/* CONTAINER */
+.container{
+  max-width:420px;
+  margin:60px auto;
+  background:#111;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 0 20px rgba(0,255,136,0.15);
+}
 
-    button {
-      background-color: #00ff88;
-      color: #000;
-      border: none;
-      padding: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 15px;
-      width: 100%;
-    }
+h1{
+  color:#00ff88;
+}
 
-    button:hover {
-      background-color: #00cc6f;
-    }
+label{
+  display:block;
+  margin-top:10px;
+  font-weight:bold;
+}
 
-    #resultado {
-      margin-top: 15px;
-      font-size: 16px;
-      color: #ffd369;
-      white-space: pre-line;
-    }
-  </style>
+input, select{
+  width:100%;
+  padding:8px;
+  margin-top:5px;
+  background:#1c1c1c;
+  color:#e0e0e0;
+  border:1px solid #333;
+}
+
+button.calc{
+  margin-top:15px;
+  width:100%;
+  padding:10px;
+  font-weight:bold;
+  background:#00ff88;
+  color:#000;
+  border:none;
+  cursor:pointer;
+}
+
+button.calc:hover{
+  background:#00cc6f;
+}
+
+#resultado{
+  margin-top:15px;
+  color:#ffd369;
+  white-space:pre-line;
+}
+
+.hidden{
+  display:none;
+}
+
+.welcome{
+  text-align:center;
+  margin-bottom:20px;
+  color:#ccc;
+}
+</style>
 </head>
 
 <body>
 
-  <div class="container">
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
 
-    <h1>Rucoy Underground</h1>
-    <p>Calculadora de XP do Rucoy Online</p>
+<div class="menu" id="menu">
+  <a onclick="mostrarXP()">Calculadora de XP</a>
+  <a onclick="mostrarGold()">Calculadora de Gold</a>
+</div>
 
-    <hr>
+<div class="container">
 
+  <h1>Rucoy Underground</h1>
+  <div class="welcome">
+    Bem-vindo ao <b>Rucoy Underground Calculator</b><br>
+    Ferramenta feita pela comunidade, pra quem joga sério.
+  </div>
+
+  <!-- XP -->
+  <div id="xpCalc">
     <label>Level atual:</label>
     <input type="number" id="levelAtual" min="1">
 
@@ -84,7 +138,7 @@
     <input type="number" id="levelDesejado" min="2">
 
     <label>Mob:</label>
-    <select id="mob">
+    <select id="mobXP">
       <option value="8">Rat Lv 1</option>
       <option value="12">Rat Lv 3</option>
       <option value="18">Crow Lv 6</option>
@@ -97,44 +151,100 @@
       <option value="300">Zombie Lv 65</option>
       <option value="375">Skeleton Lv 75</option>
       <option value="450">Skeleton Warrior Lv 90</option>
-      <option value="563">Vampire Lv 100</option>
       <option value="735">Drow Assassin Lv 120</option>
       <option value="870">Drow Fighter Lv 135</option>
-      <option value="640">Lizard Warrior Lv 150</option>
       <option value="700">Lizard Archer Lv 160</option>
       <option value="740">Lizard Shaman Lv 170</option>
       <option value="2500">Minotaur Lv 225</option>
     </select>
 
-    <button onclick="calcular()">Calcular</button>
-
-    <p id="resultado"></p>
-
+    <button class="calc" onclick="calcularXP()">Calcular XP</button>
   </div>
 
-  <script>
-    function xpTotal(level) {
-      return level * level * 100;
-    }
+  <!-- GOLD -->
+  <div id="goldCalc" class="hidden">
+    <label>Mob:</label>
+    <select id="mobGold">
+      <option value="3.1">Rat Lv 1</option>
+      <option value="2.9">Rat Lv 3</option>
+      <option value="2.75">Crow Lv 6</option>
+      <option value="4.25">Wolf Lv 9</option>
+      <option value="4.15">Goblin Lv 15</option>
+      <option value="3.55">Mummy Lv 25</option>
+      <option value="4.8">Pharaoh Lv 35</option>
+      <option value="21.3">Assassin Lv 45</option>
+      <option value="18.25">Assassin Lv 50</option>
+      <option value="29.9">Zombie Lv 65</option>
+      <option value="16.35">Skeleton Lv 75</option>
+      <option value="45.25">Skeleton Warrior Lv 90</option>
+      <option value="143.4">Minotaur Lv 225</option>
+    </select>
 
-    function calcular() {
-      const atual = Number(document.getElementById("levelAtual").value);
-      const desejado = Number(document.getElementById("levelDesejado").value);
-      const xpMob = Number(document.getElementById("mob").value);
+    <label>Kills por hora:</label>
+    <input type="number" id="killsHora" value="300">
 
-      if (!atual || !desejado || desejado <= atual) {
-        document.getElementById("resultado").innerText =
-          "Levels inválidos.";
-        return;
-      }
+    <button class="calc" onclick="calcularGold()">Calcular Gold</button>
+  </div>
 
-      const xpNecessaria = xpTotal(desejado) - xpTotal(atual);
-      const mobs = Math.ceil(xpNecessaria / xpMob);
+  <div id="resultado"></div>
 
-      document.getElementById("resultado").innerText =
-        `XP necessária: ${xpNecessaria}\nMobs necessários: ${mobs}`;
-    }
-  </script>
+</div>
+
+<script>
+function toggleMenu(){
+  document.getElementById("menu").classList.toggle("open");
+}
+
+function mostrarXP(){
+  document.getElementById("xpCalc").classList.remove("hidden");
+  document.getElementById("goldCalc").classList.add("hidden");
+  document.getElementById("resultado").innerText="";
+  toggleMenu();
+}
+
+function mostrarGold(){
+  document.getElementById("goldCalc").classList.remove("hidden");
+  document.getElementById("xpCalc").classList.add("hidden");
+  document.getElementById("resultado").innerText="";
+  toggleMenu();
+}
+
+function xpTotal(level){
+  return level * level * 100;
+}
+
+function calcularXP(){
+  const atual = Number(levelAtual.value);
+  const desejado = Number(levelDesejado.value);
+  const xpMob = Number(mobXP.value);
+
+  if(!atual || !desejado || desejado<=atual){
+    resultado.innerText="Levels inválidos.";
+    return;
+  }
+
+  const xpNec = xpTotal(desejado) - xpTotal(atual);
+  const mobs = Math.ceil(xpNec / xpMob);
+
+  resultado.innerText =
+    `XP necessária: ${xpNec}\nMobs necessários: ${mobs}`;
+}
+
+function calcularGold(){
+  const goldPorMob = Number(mobGold.value);
+  const kills = Number(killsHora.value);
+
+  if(!kills || kills<=0){
+    resultado.innerText="Kills por hora inválido.";
+    return;
+  }
+
+  const goldHora = Math.floor(goldPorMob * kills);
+
+  resultado.innerText =
+    `Gold por hora: ${goldHora}`;
+}
+</script>
 
 </body>
 </html>
