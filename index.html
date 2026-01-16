@@ -105,40 +105,23 @@ button:hover{background:#00cc6f}
 <div class="container">
 
 <h1>Rucoy Underground</h1>
-<p>Bem-vindo ao <b>Rucoy Underground Calculator</b>.<br>
-Ferramentas feitas pela comunidade, para a comunidade.</p>
+<p>
+Bem-vindo ao <b>Rucoy Underground Calculator</b>.<br>
+Cálculos baseados em dados reais da comunidade.
+</p>
 
 <hr>
 
-<!-- XP -->
+<!-- XP CORRETA -->
 <div id="xpCalc">
-  <label>Level atual:</label>
-  <input type="number" id="levelAtual" min="1">
-
-  <label>Level desejado:</label>
-  <input type="number" id="levelDesejado" min="2">
+  <label>XP atual (%):</label>
+  <input type="number" id="xpAtual" min="0" max="99">
 
   <label>Mob:</label>
   <select id="mobXP">
-    <option value="8">Rat Lv 1</option>
-    <option value="12">Rat Lv 3</option>
-    <option value="18">Crow Lv 6</option>
-    <option value="27">Wolf Lv 9</option>
-    <option value="45">Goblin Lv 15</option>
-    <option value="75">Mummy Lv 25</option>
-    <option value="113">Pharaoh Lv 35</option>
-    <option value="188">Assassin Lv 45</option>
-    <option value="240">Assassin Lv 50</option>
-    <option value="300">Zombie Lv 65</option>
-    <option value="375">Skeleton Lv 75</option>
-    <option value="450">Skeleton Warrior Lv 90</option>
-    <option value="563">Vampire Lv 100</option>
-    <option value="735">Drow Assassin Lv 120</option>
-    <option value="870">Drow Fighter Lv 135</option>
-    <option value="640">Lizard Warrior Lv 150</option>
-    <option value="700">Lizard Archer Lv 160</option>
-    <option value="740">Lizard Shaman Lv 170</option>
-    <option value="2500">Minotaur Lv 225</option>
+    <option value="143.4">Minotaur Lv 225</option>
+    <option value="75.95">Lizard High Shaman</option>
+    <option value="65.9">Gargoyle</option>
   </select>
 
   <button onclick="calcularXP()">Calcular XP</button>
@@ -149,33 +132,6 @@ Ferramentas feitas pela comunidade, para a comunidade.</p>
   <label>Mob:</label>
   <select id="mobGold">
     <option value="3.1">Rat Lv 1</option>
-    <option value="2.9">Rat Lv 3</option>
-    <option value="2.75">Crow Lv 6</option>
-    <option value="4.25">Wolf Lv 9</option>
-    <option value="5">Cobra Lv 13</option>
-    <option value="2.15">Scorpion Lv 12</option>
-    <option value="3.85">Worm Lv 14</option>
-    <option value="4.15">Goblin Lv 15</option>
-    <option value="3.55">Mummy Lv 25</option>
-    <option value="4.8">Pharaoh Lv 35</option>
-    <option value="21.3">Assassin Lv 45</option>
-    <option value="18.25">Assassin Lv 50</option>
-    <option value="29.9">Zombie Lv 65</option>
-    <option value="16.35">Skeleton Lv 75</option>
-    <option value="25">Skeleton Archer Lv 80</option>
-    <option value="45.25">Skeleton Warrior Lv 90</option>
-    <option value="36.05">Drow Assassin Lv 120</option>
-    <option value="33.45">Drow Ranger Lv 125</option>
-    <option value="40">Drow Fighter Lv 135</option>
-    <option value="12.8">Drow Mage Lv 130</option>
-    <option value="36.35">Drow Sorceress Lv 140</option>
-    <option value="35.55">Lizard Archer Lv 160</option>
-    <option value="35.65">Lizard Warrior Lv 150</option>
-    <option value="45.95">Lizard Shaman Lv 170</option>
-    <option value="75.95">Lizard High Shaman Lv 190</option>
-    <option value="42.55">Lizard Captain Lv 180</option>
-    <option value="47.7">Djinn Lv 150</option>
-    <option value="65.9">Gargoyle Lv 190</option>
     <option value="143.4">Minotaur Lv 225</option>
   </select>
 
@@ -208,28 +164,47 @@ function mostrarGold(){
   menu.style.display="none";
 }
 
-function xpTotal(lv){return lv*lv*100}
-
+/* XP SEM ERRO */
 function calcularXP(){
-  const a=Number(levelAtual.value);
-  const d=Number(levelDesejado.value);
-  const xp=Number(mobXP.value);
-  if(!a||!d||d<=a){resultado.innerText="Levels inválidos.";return}
-  const need=xpTotal(d)-xpTotal(a);
-  resultado.innerText=`XP necessária: ${need}\nMobs necessários: ${Math.ceil(need/xp)}`;
+  const xpPercent = Number(xpAtual.value);
+  const xpMobPercent = Number(mobXP.value) / 100;
+
+  if(xpPercent<0 || xpPercent>=100){
+    resultado.innerText="XP inválida.";
+    return;
+  }
+
+  const restante = 100 - xpPercent;
+  const mobs = Math.ceil(restante / xpMobPercent);
+
+  resultado.innerText =
+`XP restante: ${restante}%
+Mobs necessários: ${mobs}
+
+* Cálculo baseado na % real de XP.
+Não usa fórmula interna do jogo.`;
 }
 
+/* GOLD (estimado) */
 function calcularGold(){
-  const goldKill=Number(mobGold.value);
-  const horas=Number(horasFarm.value);
-  const KPH=300;
-  if(horas<=0){resultado.innerText="Horas inválidas.";return}
-  const goldHora=Math.floor(goldKill*KPH);
-  resultado.innerText=
-`Gold por hora: ${goldHora}
-Gold em ${horas}h: ${Math.floor(goldHora*horas)}`;
+  const goldKill = Number(mobGold.value);
+  const horas = Number(horasFarm.value);
+  const killsHora = 300; // média estimada
+
+  if(horas<=0){
+    resultado.innerText="Horas inválidas.";
+    return;
+  }
+
+  const goldHora = Math.floor(goldKill * killsHora);
+
+  resultado.innerText =
+`Gold por hora (estimado): ${goldHora}
+Gold em ${horas}h: ${Math.floor(goldHora * horas)}
+
+* Valor médio. Pode variar conforme PT e spawn.`;
 }
 </script>
 
 </body>
-  </html>
+</html>
