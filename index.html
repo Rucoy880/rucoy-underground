@@ -13,7 +13,7 @@ body{
 }
 
 .container{
-  max-width:500px;
+  max-width:520px;
   margin:auto;
   background:#141414;
   padding:20px;
@@ -42,7 +42,7 @@ select{
 
 button{
   width:100%;
-  margin-top:20px;
+  margin-top:15px;
   padding:12px;
   background:#00ff88;
   color:#000;
@@ -55,7 +55,7 @@ button:hover{
   background:#00cc6f;
 }
 
-#resultado{
+#resultado, #classeResultado{
   margin-top:20px;
   padding:15px;
   background:#1a1a1a;
@@ -115,44 +115,124 @@ button:hover{
 <button onclick="diagnosticar()">Analisar Grind</button>
 
 <div id="resultado"></div>
+
+<hr style="border:1px solid #222;margin:25px 0">
+
+<h1>Análise de Classe</h1>
+
+<label>Classe principal</label>
+<select id="classe">
+  <option value="melee">Melee</option>
+  <option value="distance">Distance</option>
+  <option value="mage">Mage</option>
+</select>
+
+<button onclick="analisarClasse()">Essa classe combina com meu grind?</button>
+
+<div id="classeResultado"></div>
+
 </div>
 
 <script>
+let estadoGrind = "";
+
 function diagnosticar(){
   let total = 0;
   for(let i=1;i<=6;i++){
     total += Number(document.getElementById("q"+i).value);
   }
 
-  let resultado = "";
+  let texto = "";
 
   if(total <= 5){
-    resultado =
+    estadoGrind = "ruim";
+    texto =
     "❌ GRIND RUIM\n\n" +
     "Você está forçando área.\n" +
-    "Isso NÃO acelera seu progresso.\n" +
-    "Volte um nível, ganhe consistência e depois avance.";
+    "Isso não acelera progresso.\n" +
+    "Recuar agora é inteligência, não fraqueza.";
   }
   else if(total <= 8){
-    resultado =
+    estadoGrind = "instavel";
+    texto =
     "⚠️ GRIND INSTÁVEL\n\n" +
-    "Dá pra upar aqui, mas você está no limite.\n" +
-    "Qualquer erro vira morte ou gasto excessivo.";
+    "Dá pra upar, mas você está no limite.\n" +
+    "Erro vira morte ou gasto excessivo.";
   }
   else if(total <= 10){
-    resultado =
+    estadoGrind = "eficiente";
+    texto =
     "✅ GRIND EFICIENTE\n\n" +
     "Você está no lugar certo.\n" +
-    "Continue nesse ritmo e pare de trocar de área por ansiedade.";
+    "Consistência > ansiedade.";
   }
   else{
-    resultado =
+    estadoGrind = "subaproveitado";
+    texto =
     "🔁 GRIND SUBAPROVEITADO\n\n" +
-    "Você domina essa área.\n" +
-    "Pode subir o desafio para ganhar mais eficiência.";
+    "Você domina a área.\n" +
+    "Pode subir o desafio com segurança.";
   }
 
-  document.getElementById("resultado").innerText = resultado;
+  document.getElementById("resultado").innerText = texto;
+  document.getElementById("classeResultado").innerText = "";
+}
+
+function analisarClasse(){
+  if(!estadoGrind){
+    document.getElementById("classeResultado").innerText =
+    "Analise o grind primeiro.\nSem isso, qualquer classe vira erro.";
+    return;
+  }
+
+  const classe = document.getElementById("classe").value;
+  let msg = "";
+
+  if(classe === "mage"){
+    if(estadoGrind === "ruim" || estadoGrind === "instavel"){
+      msg =
+      "❌ MAGE NÃO COMBINA AGORA\n\n" +
+      "Seu grind exige segurança.\n" +
+      "Mage aqui só vai gerar mortes e prejuízo.\n" +
+      "Isso é ego, não eficiência.";
+    } else {
+      msg =
+      "✅ MAGE FAZ SENTIDO\n\n" +
+      "Seu ritmo suporta risco.\n" +
+      "Boa escolha pra XP alto.\n" +
+      "Não relaxa ou você paga caro.";
+    }
+  }
+
+  if(classe === "distance"){
+    if(estadoGrind === "ruim"){
+      msg =
+      "⚠️ DISTANCE NÃO É IDEAL\n\n" +
+      "Falta controle e consistência.\n" +
+      "Você vai morrer por posicionamento.";
+    } else {
+      msg =
+      "✅ DISTANCE COMBINA\n\n" +
+      "Boa eficiência com risco controlado.\n" +
+      "Classe equilibrada pro seu momento.";
+    }
+  }
+
+  if(classe === "melee"){
+    if(estadoGrind === "subaproveitado"){
+      msg =
+      "⚠️ MELEE SEGURA DEMAIS\n\n" +
+      "Você aguenta mais do que está fazendo.\n" +
+      "Dá pra subir área e ganhar mais XP.";
+    } else {
+      msg =
+      "✅ MELEE É COERENTE\n\n" +
+      "Segurança, consistência e grind longo.\n" +
+      "Escolha inteligente, não chamativa.";
+    }
+  }
+
+  document.getElementById("classeResultado").innerText = msg;
 }
 </script>
 
