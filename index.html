@@ -2,207 +2,157 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Rucoy Underground</title>
+<title>Diagnóstico de Grind - Rucoy</title>
 
 <style>
 body{
-  background:#0f0f0f;
+  background:#0e0e0e;
   color:#e0e0e0;
   font-family:Arial,Helvetica,sans-serif;
   padding:20px;
 }
 
 .container{
-  max-width:420px;
-  margin:60px auto;
-  background:#111;
+  max-width:500px;
+  margin:auto;
+  background:#141414;
   padding:20px;
   border-radius:10px;
-  box-shadow:0 0 20px rgba(0,255,136,.15);
 }
 
-h1{color:#00ff88;margin-top:0}
-hr{border:1px solid #222}
+h1{
+  color:#00ff88;
+  text-align:center;
+}
 
 label{
-  font-weight:bold;
   display:block;
-  margin-top:10px;
+  margin-top:15px;
+  font-weight:bold;
 }
 
-input,select{
-  background:#1c1c1c;
-  color:#e0e0e0;
-  border:1px solid #333;
-  padding:8px;
+select{
   width:100%;
+  padding:8px;
   margin-top:5px;
+  background:#1c1c1c;
+  color:#fff;
+  border:1px solid #333;
 }
 
 button{
+  width:100%;
+  margin-top:20px;
+  padding:12px;
   background:#00ff88;
   color:#000;
-  border:none;
-  padding:10px;
   font-weight:bold;
+  border:none;
   cursor:pointer;
-  margin-top:15px;
-  width:100%;
 }
 
-button:hover{background:#00cc6f}
+button:hover{
+  background:#00cc6f;
+}
 
 #resultado{
-  margin-top:15px;
-  font-size:16px;
-  color:#ffd369;
+  margin-top:20px;
+  padding:15px;
+  background:#1a1a1a;
+  border-radius:8px;
   white-space:pre-line;
 }
-
-/* MENU */
-.menu-btn{
-  position:fixed;
-  top:15px;
-  left:15px;
-  background:#00ff88;
-  color:#000;
-  border:none;
-  padding:8px 12px;
-  font-weight:bold;
-  cursor:pointer;
-  border-radius:6px;
-}
-
-.menu{
-  position:fixed;
-  top:55px;
-  left:15px;
-  background:#111;
-  border:1px solid #333;
-  border-radius:8px;
-  display:none;
-}
-
-.menu button{
-  width:180px;
-  margin:0;
-  border-radius:0;
-}
-
-.hidden{display:none}
 </style>
 </head>
 
 <body>
 
-<button class="menu-btn" onclick="toggleMenu()">☰ Menu</button>
-
-<div class="menu" id="menu">
-  <button onclick="mostrarXP()">Calculadora de XP</button>
-  <button onclick="mostrarGold()">Calculadora de Gold</button>
-</div>
-
 <div class="container">
+<h1>Diagnóstico de Grind</h1>
 
-<h1>Rucoy Underground</h1>
-<p>
-Bem-vindo ao <b>Rucoy Underground Calculator</b>.<br>
-Cálculos baseados em dados reais da comunidade.
-</p>
+<label>Tempo para matar 1 mob</label>
+<select id="q1">
+  <option value="2">Menos de 5 segundos</option>
+  <option value="1">Entre 5 e 10 segundos</option>
+  <option value="0">Mais de 10 segundos</option>
+</select>
 
-<hr>
+<label>Você morre nessa área?</label>
+<select id="q2">
+  <option value="2">Quase nunca</option>
+  <option value="1">Às vezes</option>
+  <option value="0">Morro direto</option>
+</select>
 
-<!-- XP CORRETA -->
-<div id="xpCalc">
-  <label>XP atual (%):</label>
-  <input type="number" id="xpAtual" min="0" max="99">
+<label>Quantos mobs você aguenta?</label>
+<select id="q3">
+  <option value="2">2 ou mais tranquilo</option>
+  <option value="1">2 com risco</option>
+  <option value="0">Só 1</option>
+</select>
 
-  <label>Mob:</label>
-  <select id="mobXP">
-    <option value="143.4">Minotaur Lv 225</option>
-    <option value="75.95">Lizard High Shaman</option>
-    <option value="65.9">Gargoyle</option>
-  </select>
+<label>Uso de pot</label>
+<select id="q4">
+  <option value="2">Quase não uso</option>
+  <option value="1">Uso moderado</option>
+  <option value="0">Toda hora</option>
+</select>
 
-  <button onclick="calcularXP()">Calcular XP</button>
-</div>
+<label>Ritmo da sessão</label>
+<select id="q5">
+  <option value="2">Constante e focado</option>
+  <option value="1">Ritmo médio</option>
+  <option value="0">Para toda hora</option>
+</select>
 
-<!-- GOLD -->
-<div id="goldCalc" class="hidden">
-  <label>Mob:</label>
-  <select id="mobGold">
-    <option value="3.1">Rat Lv 1</option>
-    <option value="143.4">Minotaur Lv 225</option>
-  </select>
+<label>Sensação do grind</label>
+<select id="q6">
+  <option value="2">Fluindo bem</option>
+  <option value="1">Neutro</option>
+  <option value="0">Cansativo / estressante</option>
+</select>
 
-  <label>Horas de farm:</label>
-  <input type="number" id="horasFarm" value="1" step="0.5" min="0.5">
+<button onclick="diagnosticar()">Analisar Grind</button>
 
-  <button onclick="calcularGold()">Calcular Gold</button>
-</div>
-
-<p id="resultado"></p>
-
+<div id="resultado"></div>
 </div>
 
 <script>
-function toggleMenu(){
-  menu.style.display = menu.style.display==="block"?"none":"block";
-}
-
-function mostrarXP(){
-  xpCalc.classList.remove("hidden");
-  goldCalc.classList.add("hidden");
-  resultado.innerText="";
-  menu.style.display="none";
-}
-
-function mostrarGold(){
-  goldCalc.classList.remove("hidden");
-  xpCalc.classList.add("hidden");
-  resultado.innerText="";
-  menu.style.display="none";
-}
-
-/* XP SEM ERRO */
-function calcularXP(){
-  const xpPercent = Number(xpAtual.value);
-  const xpMobPercent = Number(mobXP.value) / 100;
-
-  if(xpPercent<0 || xpPercent>=100){
-    resultado.innerText="XP inválida.";
-    return;
+function diagnosticar(){
+  let total = 0;
+  for(let i=1;i<=6;i++){
+    total += Number(document.getElementById("q"+i).value);
   }
 
-  const restante = 100 - xpPercent;
-  const mobs = Math.ceil(restante / xpMobPercent);
+  let resultado = "";
 
-  resultado.innerText =
-`XP restante: ${restante}%
-Mobs necessários: ${mobs}
-
-* Cálculo baseado na % real de XP.
-Não usa fórmula interna do jogo.`;
-}
-
-/* GOLD (estimado) */
-function calcularGold(){
-  const goldKill = Number(mobGold.value);
-  const horas = Number(horasFarm.value);
-  const killsHora = 300; // média estimada
-
-  if(horas<=0){
-    resultado.innerText="Horas inválidas.";
-    return;
+  if(total <= 5){
+    resultado =
+    "❌ GRIND RUIM\n\n" +
+    "Você está forçando área.\n" +
+    "Isso NÃO acelera seu progresso.\n" +
+    "Volte um nível, ganhe consistência e depois avance.";
+  }
+  else if(total <= 8){
+    resultado =
+    "⚠️ GRIND INSTÁVEL\n\n" +
+    "Dá pra upar aqui, mas você está no limite.\n" +
+    "Qualquer erro vira morte ou gasto excessivo.";
+  }
+  else if(total <= 10){
+    resultado =
+    "✅ GRIND EFICIENTE\n\n" +
+    "Você está no lugar certo.\n" +
+    "Continue nesse ritmo e pare de trocar de área por ansiedade.";
+  }
+  else{
+    resultado =
+    "🔁 GRIND SUBAPROVEITADO\n\n" +
+    "Você domina essa área.\n" +
+    "Pode subir o desafio para ganhar mais eficiência.";
   }
 
-  const goldHora = Math.floor(goldKill * killsHora);
-
-  resultado.innerText =
-`Gold por hora (estimado): ${goldHora}
-Gold em ${horas}h: ${Math.floor(goldHora * horas)}
-
-* Valor médio. Pode variar conforme PT e spawn.`;
+  document.getElementById("resultado").innerText = resultado;
 }
 </script>
 
